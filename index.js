@@ -1,9 +1,37 @@
 // IMPORT STATEMENTS
 const db = require('./config/connection');
 const inquirer = require('inquirer');
+
 // CREATE INQUIRER QUESTIONS 
     // What would you like to do?
         // selections
+
+function menu (){
+    inquirer.prompt(
+        {
+            type: "list",
+            name: "action",
+            message:"What would you like to do?",
+            choices: ["View all Employees", "View all Departments", "View All Roles","Add New Employee", "Add New Department", "Add New Role","Update Employee"]
+        },
+    )
+    .then(res => {
+        if (res.action === 'View all Employees'){
+            viewAllEmployees()
+        }
+        if (res.action === 'Add New Employee'){
+            addNewEmployee()
+        }
+        if (res.action === 'Add New Department'){
+            addNewDepartment()
+        }
+        if (res.action === 'Add New Role'){
+            addNewRole()
+        }
+
+    })
+}
+menu()
 
 
 // Set up a function for every single action that may happen
@@ -12,17 +40,80 @@ const inquirer = require('inquirer');
 
 
 const viewAllEmployees = () =>{
+    db.query('SELECT * FROM employee', (err,data) =>{
+        if (err) console.log(err)
+        console.table(data)
+        menu()
+    })
+
     // make a query to database
     //display those results somehow
     //return to main menu
 };
 const viewAllDepartment = () => {
+    db.query('SELECT * FROM department', (err,data) =>{
+        if (err) console.log(err)
+        console.table(data)
+        menu()
+    })
 
 };
 const viewAllRoles = () => {
+    db.query('SELECT * FROM roles', (err,data) => {
+        if (err) console.log(err)
+        console.table(data)
+        menu()
+    })
 
 };
 const addNewEmployee = () => {
+    console.log('hello')
+    db.query('SELECT * FROM employee', (err,data) =>{
+        if (err) console.log(err)
+        const employees = data.map(employee => {
+            return {name : employee.first_name + " " + employee.last_name, value:employee.id}
+        })
+        employees.push({name:"no manager", value: null})
+        db.query('SELECT * FROM roles', (err,data) =>{
+            if (err) console.log(err)
+            const roles = data.map(role => {
+                return {name : role.title, value:role.id}
+            })
+            inquirer.prompt([
+                {
+                    type:"input",
+                    name:"firstName",
+                    message:"What is the employess first name?"
+                },
+                {
+                    type:'input',
+                    name:"lastName",
+                    message:"What is the employees last name?"
+                },
+                {
+                    type:"list",
+                    name:"roleId",
+                    message:"What role would this employee do?",
+                    choices: roles
+                },
+                {
+                    type:"list",
+                    name:"managerId",
+                    message:"Does this emplyee have a manager?",
+                    choices: employees
+                }
+            ]) 
+            .then (res =>{
+                db.query('INSERT INTO employee(first_name, last_name, role_id, manager_id) values(?, ?, ?, ?)', [res.firstName, res.lastName, res.roleId, res.managerId], (err,data) => {
+                    if (err) console.log(err)
+                    console.table(data)
+                    menu()
+                })
+            })
+        })
+    
+    })
+
     // Ask for  first and last name of employee you are adding   
     // Ask for employess role- USE M/C
         //In oder to execute this, must query roles first and show in M/C list.
@@ -35,6 +126,38 @@ const addNewEmployee = () => {
 };
 
 const addNewRole = () => {
+        db.query('SELECT * FROM department', (err,data) =>{
+            if (err) console.log(err)
+            const departments = data.map(department => {
+                return {name : department.name, value:department.id}
+            })
+            inquirer.prompt([
+                {
+                    type:"input",
+                    name:"title",
+                    message:"What is the title of the role?"
+                },
+                {
+                    type:'input',
+                    name:"salary",
+                    message:"What is the salary of this role?"
+                },
+                
+                {
+                    type:"list",
+                    name:"departmentId",
+                    message:"What department does this role belong to?",
+                    choices: departments
+                }
+            ]) 
+            .then (res =>{
+                db.query('INSERT INTO role(title,salary, dept_id) values(?, ?, ?)', [res.title, res.salary, res.departmentId], (err,data) => {
+                    if (err) console.log(err)
+                    console.table(data)
+                    menu()
+                })
+            })
+        })
     // ask what is the name of the role you are adding?
     // ask that roles salary
     //ask which department 
@@ -47,6 +170,20 @@ const addNewRole = () => {
 };
 
 const addNewDepartment = () => {
+    inquirer.prompt([
+        {
+            type:"input",
+            name:"newDepartment",
+            message:"What department would you like to add?"
+        }
+        
+    ]).then (res =>{
+        db.query("INSERT INTO department(name) values(?)",[res.newDepartment],(err,data) =>{
+            if (err) console.log(err)
+                    console.log("Successfully added new department!")
+                    menu()
+        })
+    })
     // Ask for the name of the department you are adding
     // INSERT new dept. into database
     // return confirmation if successful
