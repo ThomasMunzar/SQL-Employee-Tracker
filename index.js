@@ -212,8 +212,7 @@ const updateEmployee = () => {
             if (err) console.log(err)
             const roles = data.map(role => {
                 return { name: role.title, value: role.id }
-            })
-            // roles.push({ name: "no manager", value: null })// CANT figure this out right now will return later
+            });
             inquirer.prompt([
                 {
                     type: "list",
@@ -228,14 +227,16 @@ const updateEmployee = () => {
                     choices: roles
                 }
 
-            ])
-            .then(res => {
-            db.query("INSERT INTO roles(title) values(?)", [res.newRole], (err, data) => {
-                if (err) console.log(err)
-                console.log("Successfully updated employee and role!")
-                menu()
+            ]).then(answers =>{
+                const employeeId = answers.employeeUpdate;
+                const roleId = answers.roleUpdate;
+                const sqlUpdateQuery = "UPDATE employee SET role_id =" + roleId + "WHERE id = "+ employeeId;
+                db.query(sqlUpdateQuery, (err,result)=>{
+                    if (err) console.log(err);
+                    console.log('Employee updated successfully!')
+                    menu();
+                })
             })
-        })
         })
 
 
