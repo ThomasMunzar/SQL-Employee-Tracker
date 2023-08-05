@@ -162,22 +162,14 @@ const addNewRole = () => {
             }
         ])
             .then(res => {
-                db.query('INSERT INTO role(title,salary, dept_id) values(?, ?, ?)', [res.title, res.salary, res.departmentId], (err, data) => {
+                db.query('INSERT INTO roles(title,salary, dept_id) values(?, ?, ?)', [res.title, res.salary, res.departmentId], (err, data) => {
                     if (err) console.log(err)
                     console.table(data)
                     menu()
                 })
             })
     })
-    // ask what is the name of the role you are adding?
-    // ask that roles salary
-    //ask which department 
-    // query the departments
-    // THEN we ask department with list of choices for ROLES
-    //write new data to database
-    // must extract department ID **
-    // return confirmation message
-    // return to main menu
+    
 };
 
 const addNewDepartment = () => {
@@ -230,7 +222,7 @@ const updateEmployee = () => {
             ]).then(answers =>{
                 const employeeId = answers.employeeUpdate;
                 const roleId = answers.roleUpdate;
-                const sqlUpdateQuery = "UPDATE employee SET role_id =" + roleId + "WHERE id = "+ employeeId;
+                const sqlUpdateQuery = "UPDATE employee SET role_id =" + roleId + " WHERE id = "+ employeeId;
                 db.query(sqlUpdateQuery, (err,result)=>{
                     if (err) console.log(err);
                     console.log('Employee updated successfully!')
@@ -244,17 +236,7 @@ const updateEmployee = () => {
     })
 
 }
-    // query list of employees
-    // select employee you want to update, FIND associate employee ID
-    // what do you want new role to be?
-    //query roles for m/c
-    // What do you want to change first name to?
-    // What do you want new last name to be?(text)
-    // Who is the manager?
-    //  query employees for m.c
-
-    // With this information UPDATE with id from first step
-    // ex: emplyee with ID of 6 - here is there new info...
+   
 
 
 
