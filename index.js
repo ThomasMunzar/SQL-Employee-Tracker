@@ -213,7 +213,7 @@ const updateEmployee = () => {
             const roles = data.map(role => {
                 return { name: role.title, value: role.id }
             })
-            roles.push({ name: "no manager", value: null })// CANT figure this out right now will return later
+            // roles.push({ name: "no manager", value: null })// CANT figure this out right now will return later
             inquirer.prompt([
                 {
                     type: "list",
@@ -229,6 +229,13 @@ const updateEmployee = () => {
                 }
 
             ])
+            .then(res => {
+            db.query("INSERT INTO roles(title) values(?)", [res.newRole], (err, data) => {
+                if (err) console.log(err)
+                console.log("Successfully updated employee and role!")
+                menu()
+            })
+        })
         })
 
 

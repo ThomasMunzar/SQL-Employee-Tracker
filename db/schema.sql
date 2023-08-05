@@ -1,8 +1,8 @@
 -- Need to create 3 tables in a database
 
-DROP DATABASE IF EXISTS employees_db;
-CREATE DATABASE employees_db;
-USE employees_db;
+DROP DATABASE IF EXISTS simpsons_db
+CREATE DATABASE simpsons_db;
+USE simpsons_db;
 
 
 
@@ -28,3 +28,5 @@ CREATE TABLE roles(
     FOREIGN KEY (manager_id) REFERENCES employee(id)
      );
 
+--  CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+--   CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL

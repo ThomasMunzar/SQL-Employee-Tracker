@@ -20,9 +20,9 @@ VALUES ('CEO', 5000, 1),
        ('Co-Pilot', 50000, 1);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ('Nelson', 'Muntz', 6,4),
+VALUES ('Nelson', 'Muntz', 6,NULL),
        ('Marge', 'Simpson', 5,6),
-       ('Milhouse', 'Van Houten', 3,4),
+       ('Milhouse', 'Van Houten', 3,NULL),
        ('Edna', 'Krabappel', 4,6),
        ('Barney', 'Gumble', 2,6),
-       ('Hans', 'Moleman', 1);
+       ('Hans', 'Moleman', 1, NULL);
